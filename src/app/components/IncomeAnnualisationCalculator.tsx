@@ -194,7 +194,7 @@ export default function IncomeAnnualisationCalculator() {
       <div className="relative z-10 w-full max-w-5xl">
         {/* Title Outside Widget */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl lg:text-5xl font-sans text-slate-600">Income Annualisation Calculator</h1>
+          <h1 className="text-4xl lg:text-5xl text-slate-600">Income Annualisation Calculator</h1>
         </div>
 
         {/* Main Card */}

@@ -1,7 +1,6 @@
 import Link from 'next/link';
-import { Calculator, DollarSign, TrendingUp } from 'lucide-react';
+import { DollarSign, CarFront, TrendingUp, Home as HomeIcon, ExternalLink } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
 export default function Home() {
@@ -20,7 +19,7 @@ export default function Home() {
       <div className="relative z-10 w-full max-w-4xl">
         {/* Title */}
         <div className="text-center mb-12">
-          <h1 className="text-5xl lg:text-6xl font-sans text-slate-600 mb-4">Swyft Calculators</h1>
+          <h1 className="text-5xl lg:text-6xl text-slate-600 mb-4">Swyft Calculators</h1>
           <p className="text-lg text-slate-500">Professional financial calculation tools</p>
         </div>
 
@@ -38,65 +37,61 @@ export default function Home() {
         {/* Calculator Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Loan Calculator Card */}
-          <Card className="bg-slate-800/80 backdrop-blur-xl border-slate-700/50 shadow-2xl text-white rounded-3xl hover:scale-105 transition-transform duration-300">
-            <CardContent className="p-8">
-              <div className="flex items-center justify-center w-16 h-16 bg-blue-500/20 rounded-full mb-6 mx-auto">
-                <Calculator className="h-8 w-8 text-blue-400" />
-              </div>
-              <h2 className="text-2xl font-semibold text-center text-white mb-4">Loan Calculator</h2>
-              <p className="text-slate-300 text-center mb-6">
-                Calculate loan repayments, interest costs, and amortization schedules for various loan terms and frequencies.
-              </p>
-              <Link href="/loan-calculator">
-                <Button className="w-full bg-slate-600 hover:bg-slate-500 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg border border-slate-500/30">
-                  Open Loan Calculator
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
+          <Link href="/loan-calculator">
+            <Card className="bg-slate-800/80 backdrop-blur-xl border-slate-700/50 shadow-2xl text-white rounded-3xl hover:scale-105 transition-transform duration-300 cursor-pointer relative">
+              <CardContent className="p-8">
+                <div className="flex items-center justify-center w-16 h-16 bg-blue-500/20 rounded-full mb-6 mx-auto">
+                  <CarFront className="h-8 w-8 text-blue-400" />
+                </div>
+                <h2 className="text-2xl font-semibold text-center text-white mb-6">Leasing Calculator</h2>
+                <ExternalLink className="h-5 w-5 text-slate-400 absolute bottom-6 right-6" />
+              </CardContent>
+            </Card>
+          </Link>
 
           {/* Tax Calculator Card */}
-          <Card className="bg-slate-800/80 backdrop-blur-xl border-slate-700/50 shadow-2xl text-white rounded-3xl hover:scale-105 transition-transform duration-300">
-            <CardContent className="p-8">
-              <div className="flex items-center justify-center w-16 h-16 bg-green-500/20 rounded-full mb-6 mx-auto">
-                <DollarSign className="h-8 w-8 text-green-400" />
-              </div>
-              <h2 className="text-2xl font-semibold text-center text-white mb-4">Income Tax Calculator</h2>
-              <p className="text-slate-300 text-center mb-6">
-                Calculate Australian income tax, Medicare levy, and net income based on current 2024-25 tax brackets.
-              </p>
-              <Link href="/tax-calculator">
-                <Button className="w-full bg-slate-600 hover:bg-slate-500 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg border border-slate-500/30">
-                  Open Tax Calculator
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
+          <Link href="/tax-calculator">
+            <Card className="bg-slate-800/80 backdrop-blur-xl border-slate-700/50 shadow-2xl text-white rounded-3xl hover:scale-105 transition-transform duration-300 cursor-pointer relative">
+              <CardContent className="p-8">
+                <div className="flex items-center justify-center w-16 h-16 bg-green-500/20 rounded-full mb-6 mx-auto">
+                  <DollarSign className="h-8 w-8 text-green-400" />
+                </div>
+                <h2 className="text-2xl font-semibold text-center text-white mb-6">Income Tax Calculator</h2>
+                <ExternalLink className="h-5 w-5 text-slate-400 absolute bottom-6 right-6" />
+              </CardContent>
+            </Card>
+          </Link>
 
           {/* Income Annualisation Calculator Card */}
-          <Card className="bg-slate-800/80 backdrop-blur-xl border-slate-700/50 shadow-2xl text-white rounded-3xl hover:scale-105 transition-transform duration-300">
-            <CardContent className="p-8">
-              <div className="flex items-center justify-center w-16 h-16 bg-purple-500/20 rounded-full mb-6 mx-auto">
-                <TrendingUp className="h-8 w-8 text-purple-400" />
-              </div>
-              <h2 className="text-2xl font-semibold text-center text-white mb-4">Income Annualisation</h2>
-              <p className="text-slate-300 text-center mb-6">
-                Calculate annualised income from YTD earnings and pay periods. Perfect for lenders assessing PAYG earnings.
-              </p>
-              <Link href="/income-annualisation">
-                <Button className="w-full bg-slate-600 hover:bg-slate-500 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg border border-slate-500/30">
-                  Open Annualisation Calculator
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
+          <Link href="/income-annualisation">
+            <Card className="bg-slate-800/80 backdrop-blur-xl border-slate-700/50 shadow-2xl text-white rounded-3xl hover:scale-105 transition-transform duration-300 cursor-pointer relative">
+              <CardContent className="p-8">
+                <div className="flex items-center justify-center w-16 h-16 bg-purple-500/20 rounded-full mb-6 mx-auto">
+                  <TrendingUp className="h-8 w-8 text-purple-400" />
+                </div>
+                <h2 className="text-2xl font-semibold text-center text-white mb-6">Income Annualisation</h2>
+                <ExternalLink className="h-5 w-5 text-slate-400 absolute bottom-6 right-6" />
+              </CardContent>
+            </Card>
+          </Link>
+
+          {/* Mortgage Calculator Card */}
+          <Link href="/mortgage-calculator">
+            <Card className="bg-slate-800/80 backdrop-blur-xl border-slate-700/50 shadow-2xl text-white rounded-3xl hover:scale-105 transition-transform duration-300 cursor-pointer relative">
+              <CardContent className="p-8">
+                <div className="flex items-center justify-center w-16 h-16 bg-orange-500/20 rounded-full mb-6 mx-auto">
+                  <HomeIcon className="h-8 w-8 text-orange-400" />
+                </div>
+                <h2 className="text-2xl font-semibold text-center text-white mb-6">Mortgage Calculator</h2>
+                <ExternalLink className="h-5 w-5 text-slate-400 absolute bottom-6 right-6" />
+              </CardContent>
+            </Card>
+          </Link>
         </div>
 
         {/* Footer */}
         <div className="text-center mt-12">
-          <p className="text-slate-400 text-sm">
-            Professional financial calculators for loans, tax planning, and income analysis
-          </p>
+    
         </div>
       </div>
     </div>

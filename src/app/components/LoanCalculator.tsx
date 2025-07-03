@@ -36,6 +36,8 @@ import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
 
 import Image from "next/image"
 
+
+
 interface LoanInputs {
   loanAmount: number
 
@@ -419,15 +421,14 @@ export default function LoanCalculator() {
         {/* Title Outside Widget */}
 
         <div className="text-center mb-8">
-          <h1 className="text-4xl lg:text-5xl text-slate-600">Leasing Calculator</h1>
+          <h1 className="text-4xl lg:text-5xl text-theme-primary font-theme">Leasing Calculator</h1>
         </div>
 
         {/* Main Card - More Transparent */}
 
-        <Card className="bg-slate-800/80 backdrop-blur-xl border-slate-700/50 shadow-2xl text-white rounded-3xl relative">
+        <Card className="bg-theme-primary/80 backdrop-blur-xl border-theme-secondary/50 shadow-2xl text-white rounded-3xl relative">
           <CardContent className="p-8">
             {/* Company Logo */}
-
             <div className="absolute top-6 right-6">
               <Image
                 src="/images/SF_logo_white.png"
@@ -451,13 +452,13 @@ export default function LoanCalculator() {
                     {/* Loan Amount */}
 
                     <div className="space-y-2">
-                      <Label htmlFor="loanAmount" className="text-sm font-medium text-slate-300">
+                      <Label htmlFor="loanAmount" className="text-sm font-medium text-white font-theme">
                         Loan Amount
                       </Label>
 
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <span className="text-slate-400 text-lg font-bold">$</span>
+                          <span className="text-white text-lg font-bold">$</span>
                         </div>
 
                         <Input
@@ -465,7 +466,7 @@ export default function LoanCalculator() {
                           id="loanAmount"
                           value={inputs.loanAmount || ""}
                           onChange={(e) => handleInputChange("loanAmount", e.target.value)}
-                          className={`pl-8 bg-slate-700/50 border-slate-600 text-white placeholder-slate-400 focus:border-blue-400 focus:ring-blue-400/20 h-12 text-lg ${
+                          className={`pl-8 bg-theme-secondary/50 border-theme-secondary text-white placeholder-theme-secondary/70 focus:border-blue-400 focus:ring-blue-400/20 h-12 text-lg ${
                             touchedFields.loanAmount && errors.loanAmount ? "border-red-400 focus:border-red-400" : ""
                           }`}
                           placeholder="500,000"
@@ -484,7 +485,7 @@ export default function LoanCalculator() {
                     {/* Interest Rate */}
 
                     <div className="space-y-2">
-                      <Label htmlFor="interestRate" className="text-sm font-medium text-slate-300">
+                      <Label htmlFor="interestRate" className="text-sm font-medium text-white">
                         Interest Rate (per annum)
                       </Label>
 
@@ -495,7 +496,7 @@ export default function LoanCalculator() {
                           step="0.01"
                           value={inputs.interestRate || ""}
                           onChange={(e) => handleInputChange("interestRate", e.target.value)}
-                          className={`pr-12 bg-slate-700/50 border-slate-600 text-white placeholder-slate-400 focus:border-blue-400 focus:ring-blue-400/20 h-12 text-lg ${
+                          className={`pr-12 bg-theme-secondary/50 border-theme-secondary text-white placeholder-theme-secondary/70 focus:border-blue-400 focus:ring-blue-400/20 h-12 text-lg ${
                             touchedFields.interestRate && errors.interestRate
                               ? "border-red-400 focus:border-red-400"
                               : ""
@@ -504,7 +505,7 @@ export default function LoanCalculator() {
                         />
 
                         <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                          <Percent className="h-5 w-5 text-slate-400" />
+                          <Percent className="h-5 w-5 text-white" />
                         </div>
                       </div>
 
@@ -521,9 +522,9 @@ export default function LoanCalculator() {
 
                     <div className="space-y-4">
                       <div className="flex justify-between items-center">
-                        <Label className="text-sm font-medium text-slate-300">Loan Term</Label>
+                        <Label className="text-sm font-medium text-white">Loan Term</Label>
 
-                        <Badge className="bg-slate-600 text-slate-300 border-slate-500">
+                        <Badge className="bg-theme-secondary text-white border-theme-secondary">
                           {inputs.loanTerm} {inputs.loanTerm === 1 ? "year" : "years"}
                         </Badge>
                       </div>
@@ -541,7 +542,7 @@ export default function LoanCalculator() {
                         className="w-full"
                       />
 
-                      <div className="flex justify-between text-xs text-slate-400">
+                      <div className="flex justify-between text-xs text-white">
                         <span>0 years</span>
 
                         <span>7 years</span>
@@ -561,7 +562,7 @@ export default function LoanCalculator() {
                 {/* Repayment Frequency */}
 
                 <div className="space-y-4">
-                  <Label className="text-sm font-medium text-slate-300">Repayment Frequency</Label>
+                  <Label className="text-sm font-medium text-white">Repayment Frequency</Label>
 
                   <RadioGroup
                     value={inputs.repaymentFrequency}
@@ -580,13 +581,13 @@ export default function LoanCalculator() {
 
                         <Label
                           htmlFor={frequency.value}
-                          className="flex flex-col items-center justify-center p-4 bg-slate-700/30 border border-slate-600 rounded-lg cursor-pointer hover:bg-slate-700/50 peer-data-[state=checked]:border-blue-400 peer-data-[state=checked]:bg-blue-500/10 transition-all duration-200"
+                                                      className="flex flex-col items-center justify-center p-4 bg-theme-secondary/30 border border-theme-secondary rounded-lg cursor-pointer hover:bg-theme-secondary/50 peer-data-[state=checked]:border-theme-primary peer-data-[state=checked]:bg-theme-primary/20 transition-all duration-200"
                         >
-                          <Calendar className="h-5 w-5 mb-2 text-slate-400 peer-data-[state=checked]:text-blue-400" />
+                                                      <Calendar className="h-5 w-5 mb-2 text-white peer-data-[state=checked]:text-theme-primary" />
 
                           <span className="font-medium text-sm text-white">{frequency.label}</span>
 
-                          <Badge variant="secondary" className="mt-1 text-xs bg-slate-600 text-slate-300">
+                          <Badge variant="secondary" className="mt-1 text-xs bg-theme-secondary text-white">
                             {frequency.desc}
                           </Badge>
                         </Label>
@@ -599,7 +600,7 @@ export default function LoanCalculator() {
 
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <Label className="text-sm font-medium text-slate-300">Balloon Payment</Label>
+                    <Label className="text-sm font-medium text-white">Balloon Payment</Label>
 
                     <Switch
                       checked={inputs.hasResidualPayment}
@@ -609,11 +610,11 @@ export default function LoanCalculator() {
                   </div>
 
                   {inputs.hasResidualPayment && (
-                    <div className="space-y-4 p-4 bg-slate-700/30 border border-slate-600 rounded-lg animate-fade-in">
+                    <div className="space-y-4 p-4 bg-theme-secondary/30 border border-theme-secondary rounded-lg animate-fade-in">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium text-slate-300">Balloon Amount</span>
+                        <span className="text-sm font-medium text-white">Balloon Amount</span>
 
-                        <Badge className="bg-slate-600 text-slate-300 border-slate-500">
+                        <Badge className="bg-theme-secondary text-white border-theme-secondary">
                           {formatCurrency(inputs.residualPayment)}
                         </Badge>
                       </div>
@@ -630,7 +631,7 @@ export default function LoanCalculator() {
                         className="w-full"
                       />
 
-                      <div className="flex justify-between text-xs text-slate-400">
+                      <div className="flex justify-between text-xs text-white">
                         <span>$0</span>
 
                         <span>{formatCurrency(Math.max(inputs.loanAmount * 0.5, 10000))}</span>
@@ -676,9 +677,9 @@ export default function LoanCalculator() {
                     {/* Summary Cards */}
 
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-slate-700/50 p-4 rounded-lg border border-slate-600">
+                      <div className="bg-theme-secondary/50 p-4 rounded-lg border border-theme-secondary">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                          <span className="text-xs font-medium text-white uppercase tracking-wider">
                             Total Payable
                           </span>
 
@@ -690,9 +691,9 @@ export default function LoanCalculator() {
                         </p>
                       </div>
 
-                      <div className="bg-slate-700/50 p-4 rounded-lg border border-slate-600">
+                      <div className="bg-theme-secondary/50 p-4 rounded-lg border border-theme-secondary">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                          <span className="text-xs font-medium text-white uppercase tracking-wider">
                             Total Interest
                           </span>
 
@@ -704,9 +705,9 @@ export default function LoanCalculator() {
                         </p>
                       </div>
 
-                      <div className="bg-slate-700/50 p-4 rounded-lg border border-slate-600">
+                      <div className="bg-theme-secondary/50 p-4 rounded-lg border border-theme-secondary">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                          <span className="text-xs font-medium text-white uppercase tracking-wider">
                             Total Payments
                           </span>
 
@@ -716,9 +717,9 @@ export default function LoanCalculator() {
                         <p className="text-lg font-bold text-white">{formatNumber(calculateRepayments.totalPeriods)}</p>
                       </div>
 
-                      <div className="bg-slate-700/50 p-4 rounded-lg border border-slate-600">
+                      <div className="bg-theme-secondary/50 p-4 rounded-lg border border-theme-secondary">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">Per Year</span>
+                          <span className="text-xs font-medium text-white uppercase tracking-wider">Per Year</span>
 
                           <Calendar className="h-4 w-4 text-white" />
                         </div>
@@ -732,7 +733,7 @@ export default function LoanCalculator() {
                     {/* Balloon Payment Alert */}
 
                     {inputs.hasResidualPayment && inputs.residualPayment > 0 && (
-                      <div className="bg-slate-700/30 border border-slate-600 p-4 rounded-lg animate-fade-in">
+                      <div className="bg-theme-secondary/30 border border-theme-secondary p-4 rounded-lg animate-fade-in">
                         <div className="flex items-center space-x-3 mb-2">
                           <AlertCircle className="h-5 w-5 text-amber-400" />
 
@@ -741,7 +742,7 @@ export default function LoanCalculator() {
 
                         <p className="text-2xl font-bold text-white mb-1">{formatCurrency(inputs.residualPayment)}</p>
 
-                        <p className="text-slate-300 text-sm">Final payment at loan completion</p>
+                        <p className="text-white text-sm">Final payment at loan completion</p>
                       </div>
                     )}
 
@@ -751,7 +752,7 @@ export default function LoanCalculator() {
                       <Button
                         variant="outline"
                         onClick={() => setShowAmortizationChart(!showAmortizationChart)}
-                        className="w-full bg-slate-700/50 border-slate-600 text-white hover:bg-slate-700 hover:text-white"
+                        className="w-full bg-theme-secondary/50 border-theme-secondary text-white hover:bg-theme-secondary hover:text-white"
                       >
                         <div className="flex items-center justify-between w-full">
                           <span>View Payment Schedule Chart</span>
@@ -765,11 +766,11 @@ export default function LoanCalculator() {
                       </Button>
 
                       {showAmortizationChart && chartData.length > 0 && (
-                        <div className="bg-slate-700/30 border border-slate-600 rounded-lg p-6 animate-fade-in">
+                        <div className="bg-theme-secondary/30 border border-theme-secondary rounded-lg p-6 animate-fade-in">
                           <div className="flex items-center justify-between mb-6">
                             <h4 className="font-semibold text-white">Payment Schedule Visualization</h4>
                             <div className="text-right">
-                              <p className="text-xs text-slate-400 uppercase tracking-wider">Total Payments</p>
+                              <p className="text-xs text-white uppercase tracking-wider">Total Payments</p>
                               <p className="text-lg font-bold text-white">
                                 {formatCurrency(
                                   amortizationSchedule.reduce((sum, entry) => sum + entry.paymentAmount, 0),
@@ -903,7 +904,7 @@ export default function LoanCalculator() {
                             </LineChart>
                           </ChartContainer>
 
-                          <div className="mt-4 grid grid-cols-2 gap-4 text-xs text-slate-400">
+                          <div className="mt-4 grid grid-cols-2 gap-4 text-xs text-white">
                             <div className="space-y-1">
                               <p>
                                 • <span className="text-blue-400">Remaining Balance</span> decreases over time
@@ -930,11 +931,11 @@ export default function LoanCalculator() {
 
                     {/* Disclaimer */}
 
-                    <div className="bg-slate-700/30 p-4 rounded-lg border border-slate-600">
+                    <div className="bg-theme-secondary/30 p-4 rounded-lg border border-theme-secondary">
                       <div className="flex items-start space-x-3">
-                        <AlertCircle className="h-4 w-4 text-slate-400 mt-1 flex-shrink-0" />
+                        <AlertCircle className="h-4 w-4 text-white mt-1 flex-shrink-0" />
 
-                        <div className="text-xs text-slate-400 space-y-1">
+                        <div className="text-xs text-white space-y-1">
                           <p>• Calculations are estimates and exclude fees, charges, or taxes</p>
 
                           <p>• Results assume fixed interest rate for entire loan term</p>
@@ -946,13 +947,13 @@ export default function LoanCalculator() {
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <div className="w-16 h-16 bg-slate-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Calculator className="h-8 w-8 text-slate-400" />
+                    <div className="w-16 h-16 bg-theme-secondary/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Calculator className="h-8 w-8 text-white" />
                     </div>
 
                     <h4 className="font-semibold text-lg mb-2 text-white">Enter loan details</h4>
 
-                    <p className="text-slate-400 text-sm">Fill in the form to see your repayment calculations</p>
+                    <p className="text-white text-sm">Fill in the form to see your repayment calculations</p>
                   </div>
                 )}
               </div>

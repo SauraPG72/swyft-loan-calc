@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { DollarSign, CarFront, TrendingUp, Home as HomeIcon, ExternalLink } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
+import { SettingsModal } from "@/components/SettingsModal";
 
 export default function Home() {
   return (
@@ -19,18 +20,19 @@ export default function Home() {
       <div className="relative z-10 w-full max-w-4xl">
         {/* Title */}
         <div className="text-center mb-12">
-          <h1 className="text-5xl lg:text-6xl text-slate-600 mb-4">Swyft Calculators</h1>
-          <p className="text-lg text-slate-500">Professional financial calculation tools</p>
+          <h1 className="text-5xl lg:text-6xl text-theme-primary mb-4 font-theme">Swyft Calculators</h1>
+          <p className="text-lg text-theme-secondary font-theme">Professional financial calculation tools</p>
         </div>
 
-        {/* Company Logo */}
-        <div className="absolute top-6 right-6">
+        {/* Settings Modal & Company Logo */}
+        <SettingsModal />
+        <div className="absolute top-6 right-20">
           <Image
             src="/images/SF_logo_white.png"
             alt="Swyft Logo"
             width={80}
             height={32}
-            className="opacity-60"
+            className="opacity-80"
           />
         </div>
 
@@ -38,52 +40,52 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Loan Calculator Card */}
           <Link href="/loan-calculator">
-            <Card className="bg-slate-800/80 backdrop-blur-xl border-slate-700/50 shadow-2xl text-white rounded-3xl hover:scale-105 transition-transform duration-300 cursor-pointer relative">
+            <Card className="bg-theme-primary/80 backdrop-blur-xl border-theme-secondary/50 shadow-2xl text-white rounded-3xl hover:scale-105 transition-transform duration-300 cursor-pointer relative">
               <CardContent className="p-8">
                 <div className="flex items-center justify-center w-16 h-16 bg-blue-500/20 rounded-full mb-6 mx-auto">
                   <CarFront className="h-8 w-8 text-blue-400" />
                 </div>
-                <h2 className="text-2xl font-semibold text-center text-white mb-6">Leasing Calculator</h2>
-                <ExternalLink className="h-5 w-5 text-slate-400 absolute bottom-6 right-6" />
+                <h2 className="text-2xl font-semibold text-center text-white mb-6 font-theme">Leasing Calculator</h2>
+                <ExternalLink className="h-5 w-5 text-theme-secondary/70 absolute bottom-6 right-6" />
               </CardContent>
             </Card>
           </Link>
 
           {/* Tax Calculator Card */}
           <Link href="/tax-calculator">
-            <Card className="bg-slate-800/80 backdrop-blur-xl border-slate-700/50 shadow-2xl text-white rounded-3xl hover:scale-105 transition-transform duration-300 cursor-pointer relative">
+            <Card className="bg-theme-primary/80 backdrop-blur-xl border-theme-secondary/50 shadow-2xl text-white rounded-3xl hover:scale-105 transition-transform duration-300 cursor-pointer relative">
               <CardContent className="p-8">
                 <div className="flex items-center justify-center w-16 h-16 bg-green-500/20 rounded-full mb-6 mx-auto">
                   <DollarSign className="h-8 w-8 text-green-400" />
                 </div>
-                <h2 className="text-2xl font-semibold text-center text-white mb-6">Income Tax Calculator</h2>
-                <ExternalLink className="h-5 w-5 text-slate-400 absolute bottom-6 right-6" />
+                <h2 className="text-2xl font-semibold text-center text-white mb-6 font-theme">Income Tax Calculator</h2>
+                <ExternalLink className="h-5 w-5 text-theme-secondary/70 absolute bottom-6 right-6" />
               </CardContent>
             </Card>
           </Link>
 
           {/* Income Annualisation Calculator Card */}
           <Link href="/income-annualisation">
-            <Card className="bg-slate-800/80 backdrop-blur-xl border-slate-700/50 shadow-2xl text-white rounded-3xl hover:scale-105 transition-transform duration-300 cursor-pointer relative">
+            <Card className="bg-theme-primary/80 backdrop-blur-xl border-theme-secondary/50 shadow-2xl text-white rounded-3xl hover:scale-105 transition-transform duration-300 cursor-pointer relative">
               <CardContent className="p-8">
                 <div className="flex items-center justify-center w-16 h-16 bg-purple-500/20 rounded-full mb-6 mx-auto">
                   <TrendingUp className="h-8 w-8 text-purple-400" />
                 </div>
-                <h2 className="text-2xl font-semibold text-center text-white mb-6">Income Annualisation</h2>
-                <ExternalLink className="h-5 w-5 text-slate-400 absolute bottom-6 right-6" />
+                <h2 className="text-2xl font-semibold text-center text-white mb-6 font-theme">Income Annualisation</h2>
+                <ExternalLink className="h-5 w-5 text-theme-secondary/70 absolute bottom-6 right-6" />
               </CardContent>
             </Card>
           </Link>
 
           {/* Mortgage Calculator Card */}
           <Link href="/mortgage-calculator">
-            <Card className="bg-slate-800/80 backdrop-blur-xl border-slate-700/50 shadow-2xl text-white rounded-3xl hover:scale-105 transition-transform duration-300 cursor-pointer relative">
+            <Card className="bg-theme-primary/80 backdrop-blur-xl border-theme-secondary/50 shadow-2xl text-white rounded-3xl hover:scale-105 transition-transform duration-300 cursor-pointer relative">
               <CardContent className="p-8">
                 <div className="flex items-center justify-center w-16 h-16 bg-orange-500/20 rounded-full mb-6 mx-auto">
                   <HomeIcon className="h-8 w-8 text-orange-400" />
                 </div>
-                <h2 className="text-2xl font-semibold text-center text-white mb-6">Mortgage Calculator</h2>
-                <ExternalLink className="h-5 w-5 text-slate-400 absolute bottom-6 right-6" />
+                <h2 className="text-2xl font-semibold text-center text-white mb-6 font-theme">Mortgage Calculator</h2>
+                <ExternalLink className="h-5 w-5 text-theme-secondary/70 absolute bottom-6 right-6" />
               </CardContent>
             </Card>
           </Link>

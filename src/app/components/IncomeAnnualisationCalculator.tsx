@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useCallback } from "react"
 import { Calculator, DollarSign, Calendar, TrendingUp, AlertCircle, ArrowRight, ChevronDown, ChevronUp } from "lucide-react"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import Image from "next/image"
+
 
 interface AnnualisationInputs {
   ytdIncome: number
@@ -53,15 +54,15 @@ export default function IncomeAnnualisationCalculator() {
   const [showBreakdown, setShowBreakdown] = useState(false)
 
   // Pay frequency configurations
-  const payFrequencyConfig = {
+  const payFrequencyConfig = useMemo(() => ({
     weekly: { periodsPerYear: 52, label: "Weekly", description: "52 pays/year" },
     fortnightly: { periodsPerYear: 26, label: "Fortnightly", description: "26 pays/year" },
     monthly: { periodsPerYear: 12, label: "Monthly", description: "12 pays/year" },
     quarterly: { periodsPerYear: 4, label: "Quarterly", description: "4 pays/year" },
-  }
+  }), [])
 
   // Validate inputs
-  const validateInputs = (currentInputs: AnnualisationInputs, touched: TouchedFields): ValidationErrors => {
+  const validateInputs = useCallback((currentInputs: AnnualisationInputs, touched: TouchedFields): ValidationErrors => {
     const newErrors: ValidationErrors = {}
     const maxPaysForFrequency = payFrequencyConfig[currentInputs.payFrequency].periodsPerYear
 
@@ -78,7 +79,7 @@ export default function IncomeAnnualisationCalculator() {
     }
 
     return newErrors
-  }
+  }, [payFrequencyConfig])
 
   // Calculate annualisation results
   const calculateAnnualisation = useMemo((): AnnualisationResults | null => {
@@ -112,7 +113,7 @@ export default function IncomeAnnualisationCalculator() {
       projectedRemainingIncome,
       monthsElapsed,
     }
-  }, [inputs, isFormValid])
+  }, [inputs, isFormValid, payFrequencyConfig])
 
   // Generate breakdown data
   const annualisationBreakdown = useMemo(() => {
@@ -146,7 +147,7 @@ export default function IncomeAnnualisationCalculator() {
       inputs.ytdIncome > 0 && 
       inputs.paysReceived > 0
     )
-  }, [inputs, touchedFields])
+  }, [inputs, touchedFields, validateInputs])
 
   const handleInputChange = (field: keyof AnnualisationInputs, value: string | number) => {
     setInputs((prev) => ({
@@ -194,11 +195,11 @@ export default function IncomeAnnualisationCalculator() {
       <div className="relative z-10 w-full max-w-5xl">
         {/* Title Outside Widget */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl lg:text-5xl text-slate-600">Income Annualisation Calculator</h1>
+          <h1 className="text-4xl lg:text-5xl text-theme-primary font-theme">Income Annualisation Calculator</h1>
         </div>
 
         {/* Main Card */}
-        <Card className="bg-slate-800/80 backdrop-blur-xl border-slate-700/50 shadow-2xl text-white rounded-3xl relative">
+        <Card className="bg-theme-primary/80 backdrop-blur-xl border-theme-secondary/50 shadow-2xl text-white rounded-3xl relative">
           <CardContent className="p-8">
             {/* Company Logo */}
             <div className="absolute top-6 right-6">
@@ -221,19 +222,19 @@ export default function IncomeAnnualisationCalculator() {
                   <div className="space-y-5">
                     {/* YTD Income */}
                     <div className="space-y-2">
-                      <Label htmlFor="ytdIncome" className="text-sm font-medium text-slate-300">
+                      <Label htmlFor="ytdIncome" className="text-sm font-medium text-white">
                         Year-to-Date Income
                       </Label>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <span className="text-slate-400 text-lg font-bold">$</span>
+                          <span className="text-white text-lg font-bold">$</span>
                         </div>
                         <Input
                           type="number"
                           id="ytdIncome"
                           value={inputs.ytdIncome || ""}
                           onChange={(e) => handleInputChange("ytdIncome", e.target.value)}
-                          className={`pl-8 bg-slate-700/50 border-slate-600 text-white placeholder-slate-400 focus:border-blue-400 focus:ring-blue-400/20 h-12 text-lg ${
+                          className={`pl-8 bg-theme-secondary/50 border-theme-secondary text-white placeholder-theme-secondary/70 focus:border-blue-400 focus:ring-blue-400/20 h-12 text-lg ${
                             touchedFields.ytdIncome && errors.ytdIncome ? "border-red-400 focus:border-red-400" : ""
                           }`}
                           placeholder="65,000"
@@ -250,8 +251,8 @@ export default function IncomeAnnualisationCalculator() {
                     {/* Pay Periods Received */}
                     <div className="space-y-4">
                       <div className="flex justify-between items-center">
-                        <Label className="text-sm font-medium text-slate-300">Pay Periods Received</Label>
-                        <Badge className="bg-slate-600 text-slate-300 border-slate-500">
+                        <Label className="text-sm font-medium text-white">Pay Periods Received</Label>
+                        <Badge className="bg-theme-secondary text-white border-theme-secondary">
                           {inputs.paysReceived} {inputs.paysReceived === 1 ? "pay" : "pays"}
                         </Badge>
                       </div>
@@ -266,7 +267,7 @@ export default function IncomeAnnualisationCalculator() {
                         step={1}
                         className="w-full"
                       />
-                      <div className="flex justify-between text-xs text-slate-400">
+                      <div className="flex justify-between text-xs text-white">
                         <span>0 pays</span>
                         <span>{payFrequencyConfig[inputs.payFrequency].periodsPerYear} pays</span>
                       </div>
@@ -282,7 +283,7 @@ export default function IncomeAnnualisationCalculator() {
 
                 {/* Pay Frequency */}
                 <div className="space-y-4">
-                  <Label className="text-sm font-medium text-slate-300">Pay Frequency</Label>
+                  <Label className="text-sm font-medium text-white">Pay Frequency</Label>
                   <RadioGroup
                     value={inputs.payFrequency}
                     onValueChange={(value) => {
@@ -298,11 +299,11 @@ export default function IncomeAnnualisationCalculator() {
                         <RadioGroupItem value={key} id={key} className="peer sr-only" />
                         <Label
                           htmlFor={key}
-                          className="flex flex-col items-center justify-center p-4 bg-slate-700/30 border border-slate-600 rounded-lg cursor-pointer hover:bg-slate-700/50 peer-data-[state=checked]:border-blue-400 peer-data-[state=checked]:bg-blue-500/10 transition-all duration-200"
+                                                      className="flex flex-col items-center justify-center p-4 bg-theme-secondary/30 border border-theme-secondary rounded-lg cursor-pointer hover:bg-theme-secondary/50 peer-data-[state=checked]:border-theme-primary peer-data-[state=checked]:bg-theme-primary/20 transition-all duration-200"
                         >
-                          <Calendar className="h-5 w-5 mb-2 text-slate-400 peer-data-[state=checked]:text-blue-400" />
+                                                      <Calendar className="h-5 w-5 mb-2 text-white peer-data-[state=checked]:text-theme-primary" />
                           <span className="font-medium text-sm text-white">{config.label}</span>
-                          <Badge variant="secondary" className="mt-1 text-xs bg-slate-600 text-slate-300">
+                          <Badge variant="secondary" className="mt-1 text-xs bg-theme-secondary text-white">
                             {config.description}
                           </Badge>
                         </Label>
@@ -312,10 +313,10 @@ export default function IncomeAnnualisationCalculator() {
                 </div>
 
                 {/* Information Panel */}
-                <div className="bg-slate-700/30 p-4 rounded-lg border border-slate-600">
+                <div className="bg-theme-secondary/30 p-4 rounded-lg border border-theme-secondary">
                   <div className="flex items-start space-x-3">
                     <AlertCircle className="h-4 w-4 text-blue-400 mt-1 flex-shrink-0" />
-                    <div className="text-xs text-slate-400 space-y-1">
+                    <div className="text-xs text-white space-y-1">
                       <p className="text-blue-400 font-medium">Lender Use Case:</p>
                       <p>• Annualise PAYG earnings for loan assessment</p>
                       <p>• Higher accuracy with more pay periods completed</p>
@@ -345,9 +346,9 @@ export default function IncomeAnnualisationCalculator() {
 
                     {/* Summary Cards */}
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-slate-700/50 p-4 rounded-lg border border-slate-600">
+                      <div className="bg-theme-secondary/50 p-4 rounded-lg border border-theme-secondary">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                          <span className="text-xs font-medium text-white uppercase tracking-wider">
                             Average Pay
                           </span>
                           <DollarSign className="h-4 w-4 text-white" />
@@ -357,9 +358,9 @@ export default function IncomeAnnualisationCalculator() {
                         </p>
                       </div>
 
-                      <div className="bg-slate-700/50 p-4 rounded-lg border border-slate-600">
+                      <div className="bg-theme-secondary/50 p-4 rounded-lg border border-theme-secondary">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                          <span className="text-xs font-medium text-white uppercase tracking-wider">
                             Pays Remaining
                           </span>
                           <Calendar className="h-4 w-4 text-white" />
@@ -369,9 +370,9 @@ export default function IncomeAnnualisationCalculator() {
                         </p>
                       </div>
 
-                      <div className="bg-slate-700/50 p-4 rounded-lg border border-slate-600">
+                      <div className="bg-theme-secondary/50 p-4 rounded-lg border border-theme-secondary">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                          <span className="text-xs font-medium text-white uppercase tracking-wider">
                             Months Elapsed
                           </span>
                           <TrendingUp className="h-4 w-4 text-white" />
@@ -384,7 +385,7 @@ export default function IncomeAnnualisationCalculator() {
                     </div>
 
                     {/* Pay Period Visualization */}
-                    <div className="bg-slate-700/30 border border-slate-600 rounded-xl p-6">
+                    <div className="bg-theme-secondary/30 border border-theme-secondary rounded-xl p-6">
                       <h4 className="text-lg font-semibold text-white mb-4 flex items-center space-x-2">
                         <Calendar className="h-5 w-5 text-blue-400" />
                         <span>Pay Period Progress</span>
@@ -393,7 +394,7 @@ export default function IncomeAnnualisationCalculator() {
                       <div className="space-y-4">
                         {/* Progress Bar */}
                         <div className="relative">
-                          <div className="w-full bg-slate-800/50 rounded-full h-4 border border-slate-600">
+                          <div className="w-full bg-theme-primary/50 rounded-full h-4 border border-theme-secondary">
                             <div 
                               className="bg-gradient-to-r from-green-500 to-green-400 h-full rounded-full transition-all duration-1000 ease-out shadow-lg"
                               style={{ 
@@ -409,7 +410,7 @@ export default function IncomeAnnualisationCalculator() {
                         </div>
 
                         {/* Visual Days Grid */}
-                        <div className="grid grid-cols-13 gap-1.5 p-4 bg-slate-800/30 rounded-lg border border-slate-600">
+                        <div className="grid grid-cols-13 gap-1.5 p-4 bg-theme-primary/30 rounded-lg border border-theme-secondary">
                           {Array.from({ length: calculateAnnualisation.totalPayPeriodsInYear }, (_, index) => (
                             <div
                               key={index}
@@ -417,7 +418,7 @@ export default function IncomeAnnualisationCalculator() {
                                 w-4 h-4 rounded-sm transition-all duration-200 border
                                 ${index < inputs.paysReceived 
                                   ? 'bg-green-500 border-green-400 shadow-sm shadow-green-500/50' 
-                                  : 'bg-slate-600/50 border-slate-500 hover:bg-slate-500/70'
+                                  : 'bg-theme-secondary/50 border-theme-secondary hover:bg-theme-secondary/70'
                                 }
                               `}
                               title={`Pay ${index + 1}: ${index < inputs.paysReceived ? 'Received' : 'Remaining'}`}
@@ -434,8 +435,8 @@ export default function IncomeAnnualisationCalculator() {
                             </span>
                           </div>
                           <div className="flex items-center space-x-2">
-                            <div className="w-3 h-3 bg-slate-600/50 rounded-sm border border-slate-500"></div>
-                            <span className="text-slate-400 font-medium">
+                            <div className="w-3 h-3 bg-theme-secondary/50 rounded-sm border border-theme-secondary"></div>
+                            <span className="text-white font-medium">
                               {calculateAnnualisation.remainingPayPeriods} Remaining
                             </span>
                           </div>
@@ -443,17 +444,17 @@ export default function IncomeAnnualisationCalculator() {
 
                         {/* Summary Stats */}
                         <div className="grid grid-cols-3 gap-3 mt-4">
-                          <div className="text-center p-3 bg-slate-800/50 rounded-lg border border-slate-600">
-                            <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">Total Periods</p>
+                          <div className="text-center p-3 bg-theme-primary/50 rounded-lg border border-theme-secondary">
+                            <p className="text-xs text-white uppercase tracking-wider mb-1">Total Periods</p>
                             <p className="text-lg font-bold text-white">{calculateAnnualisation.totalPayPeriodsInYear}</p>
                           </div>
                           <div className="text-center p-3 bg-green-500/10 rounded-lg border border-green-500/30">
                             <p className="text-xs text-green-400 uppercase tracking-wider mb-1">Completed</p>
                             <p className="text-lg font-bold text-green-400">{inputs.paysReceived}</p>
                           </div>
-                          <div className="text-center p-3 bg-slate-500/10 rounded-lg border border-slate-500/30">
-                            <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">Pending</p>
-                            <p className="text-lg font-bold text-slate-300">{calculateAnnualisation.remainingPayPeriods}</p>
+                          <div className="text-center p-3 bg-theme-secondary/10 rounded-lg border border-theme-secondary/30">
+                            <p className="text-xs text-white uppercase tracking-wider mb-1">Pending</p>
+                            <p className="text-lg font-bold text-white">{calculateAnnualisation.remainingPayPeriods}</p>
                           </div>
                         </div>
                       </div>
@@ -464,7 +465,7 @@ export default function IncomeAnnualisationCalculator() {
                       <Button
                         variant="outline"
                         onClick={() => setShowBreakdown(!showBreakdown)}
-                        className="w-full bg-slate-700/50 border-slate-600 text-white hover:bg-slate-700 hover:text-white"
+                        className="w-full bg-theme-secondary/50 border-theme-secondary text-white hover:bg-theme-secondary hover:text-white"
                       >
                         <div className="flex items-center justify-between w-full">
                           <span>View Income Breakdown</span>
@@ -477,25 +478,25 @@ export default function IncomeAnnualisationCalculator() {
                       </Button>
 
                       {showBreakdown && annualisationBreakdown.length > 0 && (
-                        <div className="bg-slate-700/30 border border-slate-600 rounded-lg p-4 animate-fade-in">
+                        <div className="bg-theme-secondary/30 border border-theme-secondary rounded-lg p-4 animate-fade-in">
                           <h4 className="font-semibold text-white mb-4">Annualisation Breakdown</h4>
-                          <div className="max-h-80 overflow-y-auto rounded-lg border border-slate-600">
+                          <div className="max-h-80 overflow-y-auto rounded-lg border border-theme-secondary">
                             <Table>
-                              <TableHeader className="sticky top-0 bg-slate-800">
-                                <TableRow className="border-slate-600">
-                                  <TableHead className="text-slate-300 font-medium text-xs">Component</TableHead>
-                                  <TableHead className="text-slate-300 font-medium text-xs">Periods</TableHead>
-                                  <TableHead className="text-slate-300 font-medium text-xs">Amount</TableHead>
-                                  <TableHead className="text-slate-300 font-medium text-xs">Type</TableHead>
+                              <TableHeader className="sticky top-0 bg-theme-primary">
+                                <TableRow className="border-theme-secondary">
+                                  <TableHead className="text-white font-medium text-xs">Component</TableHead>
+                                  <TableHead className="text-white font-medium text-xs">Periods</TableHead>
+                                  <TableHead className="text-white font-medium text-xs">Amount</TableHead>
+                                  <TableHead className="text-white font-medium text-xs">Type</TableHead>
                                 </TableRow>
                               </TableHeader>
                               <TableBody>
                                 {annualisationBreakdown.map((item, index) => (
                                   <TableRow
                                     key={index}
-                                    className="border-slate-600 hover:bg-slate-700/20"
+                                    className="border-theme-secondary hover:bg-theme-secondary/20"
                                   >
-                                    <TableCell className="text-slate-300 text-xs">
+                                    <TableCell className="text-white text-xs">
                                       {item.description}
                                     </TableCell>
                                     <TableCell className="text-white text-xs font-mono">
@@ -516,9 +517,9 @@ export default function IncomeAnnualisationCalculator() {
                           </div>
 
                           {/* Total Summary */}
-                          <div className="mt-4 p-3 bg-slate-800/50 rounded-lg border border-slate-600">
+                          <div className="mt-4 p-3 bg-theme-primary/50 rounded-lg border border-theme-secondary">
                             <div className="grid grid-cols-4 gap-2 text-sm font-bold">
-                              <div className="text-slate-300">Total Annual:</div>
+                              <div className="text-white">Total Annual:</div>
                               <div className="text-white">
                                 {formatNumber(calculateAnnualisation.totalPayPeriodsInYear)}
                               </div>
@@ -529,7 +530,7 @@ export default function IncomeAnnualisationCalculator() {
                             </div>
                           </div>
 
-                          <div className="mt-3 text-xs text-slate-400 space-y-1">
+                          <div className="mt-3 text-xs text-white space-y-1">
                             <p>• Green = Actual income already received</p>
                             <p>• Amber = Projected income based on average pay</p>
                             <p>• Formula: (YTD Income ÷ Pays Received) × Total Annual Pays</p>
@@ -539,10 +540,10 @@ export default function IncomeAnnualisationCalculator() {
                     </div>
 
                     {/* Disclaimer */}
-                    <div className="bg-slate-700/30 p-4 rounded-lg border border-slate-600">
+                    <div className="bg-theme-secondary/30 p-4 rounded-lg border border-theme-secondary">
                       <div className="flex items-start space-x-3">
-                        <AlertCircle className="h-4 w-4 text-slate-400 mt-1 flex-shrink-0" />
-                        <div className="text-xs text-slate-400 space-y-1">
+                        <AlertCircle className="h-4 w-4 text-white mt-1 flex-shrink-0" />
+                        <div className="text-xs text-white space-y-1">
                           <p>• Calculations assume consistent pay amounts for remaining periods</p>
                           <p>• Results are estimates for lending assessment purposes</p>
                           <p>• Accuracy improves with more completed pay periods</p>
@@ -553,11 +554,11 @@ export default function IncomeAnnualisationCalculator() {
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <div className="w-16 h-16 bg-slate-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Calculator className="h-8 w-8 text-slate-400" />
+                    <div className="w-16 h-16 bg-theme-secondary/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Calculator className="h-8 w-8 text-white" />
                     </div>
                     <h4 className="font-semibold text-lg mb-2 text-white">Enter income details</h4>
-                    <p className="text-slate-400 text-sm">Fill in YTD income and pay periods to calculate annualised earnings</p>
+                    <p className="text-white text-sm">Fill in YTD income and pay periods to calculate annualised earnings</p>
                   </div>
                 )}
               </div>

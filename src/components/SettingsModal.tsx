@@ -61,7 +61,7 @@ export function SettingsModal() {
         <Button
           variant="outline"
           size="icon"
-          className="fixed top-6 right-6 z-50 bg-gray-900/90 backdrop-blur-sm border-gray-700 text-white hover:bg-gray-800 shadow-lg"
+          className="fixed top-6 right-6 z-50 bg-black backdrop-blur-sm border-black-700 text-white hover:bg-black-800/90 shadow-lg"
         >
           <Settings className="h-4 w-4" />
         </Button>

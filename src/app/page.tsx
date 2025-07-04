@@ -42,11 +42,11 @@ export default function Home() {
           <Link href="/loan-calculator">
             <Card className="bg-theme-primary/80 backdrop-blur-xl border-theme-secondary/50 shadow-2xl text-white rounded-3xl hover:scale-105 transition-transform duration-300 cursor-pointer relative">
               <CardContent className="p-8">
-                <div className="flex items-center justify-center w-16 h-16 bg-blue-500/20 rounded-full mb-6 mx-auto">
-                  <CarFront className="h-8 w-8 text-blue-400" />
+                <div className="flex items-center justify-center w-16 h-16 bg-white rounded-full mb-6 mx-auto">
+                  <CarFront className="h-8 w-8 text-gray-600" />
                 </div>
                 <h2 className="text-2xl font-semibold text-center text-white mb-6 font-theme">Leasing Calculator</h2>
-                <ExternalLink className="h-5 w-5 text-theme-secondary/70 absolute bottom-6 right-6" />
+                <ExternalLink className="h-5 w-5 text-white/80 absolute bottom-6 right-6" />
               </CardContent>
             </Card>
           </Link>
@@ -55,11 +55,11 @@ export default function Home() {
           <Link href="/tax-calculator">
             <Card className="bg-theme-primary/80 backdrop-blur-xl border-theme-secondary/50 shadow-2xl text-white rounded-3xl hover:scale-105 transition-transform duration-300 cursor-pointer relative">
               <CardContent className="p-8">
-                <div className="flex items-center justify-center w-16 h-16 bg-green-500/20 rounded-full mb-6 mx-auto">
-                  <DollarSign className="h-8 w-8 text-green-400" />
+                <div className="flex items-center justify-center w-16 h-16 bg-white rounded-full mb-6 mx-auto">
+                  <DollarSign className="h-8 w-8 text-gray-600" />
                 </div>
                 <h2 className="text-2xl font-semibold text-center text-white mb-6 font-theme">Income Tax Calculator</h2>
-                <ExternalLink className="h-5 w-5 text-theme-secondary/70 absolute bottom-6 right-6" />
+                <ExternalLink className="h-5 w-5 text-white/80 absolute bottom-6 right-6" />
               </CardContent>
             </Card>
           </Link>
@@ -68,11 +68,11 @@ export default function Home() {
           <Link href="/income-annualisation">
             <Card className="bg-theme-primary/80 backdrop-blur-xl border-theme-secondary/50 shadow-2xl text-white rounded-3xl hover:scale-105 transition-transform duration-300 cursor-pointer relative">
               <CardContent className="p-8">
-                <div className="flex items-center justify-center w-16 h-16 bg-purple-500/20 rounded-full mb-6 mx-auto">
-                  <TrendingUp className="h-8 w-8 text-purple-400" />
+                <div className="flex items-center justify-center w-16 h-16 bg-white rounded-full mb-6 mx-auto">
+                  <TrendingUp className="h-8 w-8 text-gray-600" />
                 </div>
                 <h2 className="text-2xl font-semibold text-center text-white mb-6 font-theme">Income Annualisation</h2>
-                <ExternalLink className="h-5 w-5 text-theme-secondary/70 absolute bottom-6 right-6" />
+                <ExternalLink className="h-5 w-5 text-white/80 absolute bottom-6 right-6" />
               </CardContent>
             </Card>
           </Link>
@@ -81,11 +81,11 @@ export default function Home() {
           <Link href="/mortgage-calculator">
             <Card className="bg-theme-primary/80 backdrop-blur-xl border-theme-secondary/50 shadow-2xl text-white rounded-3xl hover:scale-105 transition-transform duration-300 cursor-pointer relative">
               <CardContent className="p-8">
-                <div className="flex items-center justify-center w-16 h-16 bg-orange-500/20 rounded-full mb-6 mx-auto">
-                  <HomeIcon className="h-8 w-8 text-orange-400" />
+                <div className="flex items-center justify-center w-16 h-16 bg-white rounded-full mb-6 mx-auto">
+                  <HomeIcon className="h-8 w-8 text-gray-600" />
                 </div>
                 <h2 className="text-2xl font-semibold text-center text-white mb-6 font-theme">Mortgage Calculator</h2>
-                <ExternalLink className="h-5 w-5 text-theme-secondary/70 absolute bottom-6 right-6" />
+                <ExternalLink className="h-5 w-5 text-white/80 absolute bottom-6 right-6" />
               </CardContent>
             </Card>
           </Link>

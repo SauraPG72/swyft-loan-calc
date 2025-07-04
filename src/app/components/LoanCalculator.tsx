@@ -86,6 +86,8 @@ interface ChartDataPoint {
   interestPayment: number
 
   cumulativeInterest: number
+
+  cumulativePrincipal: number
 }
 
 interface ValidationErrors {
@@ -325,20 +327,19 @@ export default function LoanCalculator() {
     if (!amortizationSchedule.length) return []
 
     let cumulativeInterest = 0
+    let cumulativePrincipal = 0
 
     return amortizationSchedule.map((entry) => {
       cumulativeInterest += entry.interestAmount
+      cumulativePrincipal += entry.principalAmount
 
       return {
         payment: entry.paymentNumber,
-
         remainingBalance: Math.round(entry.remainingBalance),
-
         principalPayment: Math.round(entry.principalAmount),
-
         interestPayment: Math.round(entry.interestAmount),
-
         cumulativeInterest: Math.round(cumulativeInterest),
+        cumulativePrincipal: Math.round(cumulativePrincipal),
       }
     })
   }, [amortizationSchedule])
@@ -797,6 +798,10 @@ export default function LoanCalculator() {
                                 label: "Cumulative Interest",
                                 color: "#8b5cf6",
                               },
+                              cumulativePrincipal: {
+                                label: "Cumulative Principal",
+                                color: "#06b6d4",
+                              },
                             }}
                             className="h-[400px] w-full"
                           >
@@ -848,7 +853,9 @@ export default function LoanCalculator() {
                                       ? "Principal Payment"
                                       : name === "interestPayment"
                                         ? "Interest Payment"
-                                        : "Cumulative Interest",
+                                        : name === "cumulativeInterest"
+                                          ? "Cumulative Interest"
+                                          : "Cumulative Principal",
                                 ]}
                                 labelFormatter={(label) => `Payment #${label}`}
                               />
@@ -901,6 +908,18 @@ export default function LoanCalculator() {
                                   fill: "#8b5cf6",
                                 }}
                               />
+
+                              <Line
+                                dataKey="cumulativePrincipal"
+                                type="monotone"
+                                stroke="#06b6d4"
+                                strokeWidth={2}
+                                dot={false}
+                                activeDot={{
+                                  r: 4,
+                                  fill: "#06b6d4",
+                                }}
+                              />
                             </LineChart>
                           </ChartContainer>
 
@@ -909,19 +928,19 @@ export default function LoanCalculator() {
                               <p>
                                 • <span className="text-blue-400">Remaining Balance</span> decreases over time
                               </p>
-
                               <p>
                                 • <span className="text-green-400">Principal Payment</span> increases over time
                               </p>
+                              <p>
+                                • <span className="text-cyan-400">Cumulative Principal</span> total equity built
+                              </p>
                             </div>
-
                             <div className="space-y-1">
                               <p>
                                 • <span className="text-amber-400">Interest Payment</span> decreases over time
                               </p>
-
                               <p>
-                                • <span className="text-purple-400">Cumulative Interest</span> total paid
+                                • <span className="text-purple-400">Cumulative Interest</span> total cost paid
                               </p>
                             </div>
                           </div>

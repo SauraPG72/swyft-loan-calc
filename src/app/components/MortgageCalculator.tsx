@@ -383,7 +383,7 @@ export default function MortgageCalculator() {
                   <Label className="text-sm font-medium text-white">Repayment Frequency</Label>
                   <div className="relative">
                     <div className="flex flex-col items-center justify-center p-4 bg-theme-secondary/30 border border-theme-secondary rounded-lg">
-                      <Calendar className="h-5 w-5 mb-2 text-theme-primary" />
+                      <Calendar className="h-5 w-5 mb-2 text-white" />
                       <span className="font-medium text-sm text-white">Monthly</span>
                       <Badge variant="secondary" className="mt-1 text-xs bg-theme-secondary text-white">
                         12/year

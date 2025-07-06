@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useCallback } from "react"
 import { Calculator, DollarSign, Calendar, Percent, TrendingUp, AlertCircle, ArrowRight, ChevronDown, ChevronUp } from "lucide-react"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import Image from "next/image"
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
+
 
 interface TaxInputs {
   income: number
@@ -59,21 +60,21 @@ export default function IncomeTaxCalculator() {
   const [showTaxBreakdown, setShowTaxBreakdown] = useState(false)
 
   // 2024-25 Australian Tax Brackets
-  const taxBrackets: TaxBracket[] = [
+  const taxBrackets: TaxBracket[] = useMemo(() => [
     { min: 0, max: 18200, rate: 0, baseTax: 0 },
     { min: 18201, max: 45000, rate: 0.16, baseTax: 0 },
     { min: 45001, max: 135000, rate: 0.30, baseTax: 4288 },
     { min: 135001, max: 190000, rate: 0.37, baseTax: 31288 },
     { min: 190001, max: null, rate: 0.45, baseTax: 51638 },
-  ]
+  ], [])
 
   // Medicare Levy Surcharge thresholds
-  const medicareSurchargeThresholds = [
+  const medicareSurchargeThresholds = useMemo(() => [
     { min: 0, max: 97000, rate: 0 },
     { min: 97001, max: 113000, rate: 0.01 },
     { min: 113001, max: 151000, rate: 0.0125 },
     { min: 151001, max: null, rate: 0.015 },
-  ]
+  ], [])
 
   // Validate inputs
   const validateInputs = (currentInputs: TaxInputs, touched: TouchedFields): ValidationErrors => {
@@ -91,7 +92,7 @@ export default function IncomeTaxCalculator() {
   }
 
   // Calculate LITO (Low Income Tax Offset)
-  const calculateLITO = (taxableIncome: number): number => {
+  const calculateLITO = useCallback((taxableIncome: number): number => {
     if (taxableIncome <= 37500) {
       return 700
     } else if (taxableIncome <= 45000) {
@@ -100,10 +101,10 @@ export default function IncomeTaxCalculator() {
       return Math.max(0, 325 - ((taxableIncome - 45000) * 0.015))
     }
     return 0
-  }
+  }, [])
 
   // Calculate Medicare Levy
-  const calculateMedicareLevy = (taxableIncome: number): number => {
+  const calculateMedicareLevy = useCallback((taxableIncome: number): number => {
     // 2024-25 Medicare levy thresholds (updated from 2023-24)
     const medicareThreshold = 27222  // Lower threshold where phase-in begins
     const medicareUpperThreshold = 34027  // Upper threshold where full 2% applies
@@ -118,20 +119,20 @@ export default function IncomeTaxCalculator() {
     } else {
       return taxableIncome * medicareRate
     }
-  }
+  }, [])
 
   // Calculate Medicare Levy Surcharge (assuming no private health insurance for simplicity)
-  const calculateMedicareLevySurcharge = (taxableIncome: number): number => {
+  const calculateMedicareLevySurcharge = useCallback((taxableIncome: number): number => {
     for (const bracket of medicareSurchargeThresholds) {
       if (taxableIncome >= bracket.min && (bracket.max === null || taxableIncome <= bracket.max)) {
         return taxableIncome * bracket.rate
       }
     }
     return 0
-  }
+  }, [medicareSurchargeThresholds])
 
   // Calculate income tax using progressive tax brackets
-  const calculateIncomeTax = (taxableIncome: number): number => {
+  const calculateIncomeTax = useCallback((taxableIncome: number): number => {
     let totalTax = 0
     
     // Calculate tax progressively through each bracket
@@ -162,20 +163,20 @@ export default function IncomeTaxCalculator() {
     // Apply LITO (Low Income Tax Offset)
     const lito = calculateLITO(taxableIncome)
     return Math.max(0, totalTax - lito)
-  }
+  }, [calculateLITO])
 
   // Get marginal tax rate
-  const getMarginalTaxRate = (taxableIncome: number): number => {
+  const getMarginalTaxRate = useCallback((taxableIncome: number): number => {
     for (const bracket of taxBrackets) {
       if (taxableIncome >= bracket.min && (bracket.max === null || taxableIncome <= bracket.max)) {
         return bracket.rate
       }
     }
     return 0
-  }
+  }, [taxBrackets])
 
   // Convert income to annual
-  const getAnnualIncome = (income: number, frequency: string): number => {
+  const getAnnualIncome = useCallback((income: number, frequency: string): number => {
     switch (frequency) {
       case "weekly":
         return income * 52
@@ -185,7 +186,7 @@ export default function IncomeTaxCalculator() {
       default:
         return income
     }
-  }
+  }, [])
 
   // Utility functions
   const formatCurrency = (amount: number): string => {
@@ -247,7 +248,7 @@ export default function IncomeTaxCalculator() {
       effectiveTaxRate,
       marginalTaxRate,
     }
-  }, [inputs, isFormValid])
+  }, [inputs, isFormValid, calculateIncomeTax, calculateMedicareLevy, calculateMedicareLevySurcharge, getMarginalTaxRate, getAnnualIncome])
 
   // Generate tax breakdown
   const taxBreakdown = useMemo(() => {
@@ -329,7 +330,7 @@ export default function IncomeTaxCalculator() {
     }
 
     return breakdown
-  }, [calculateTax, isFormValid])
+  }, [calculateTax, isFormValid, calculateLITO])
 
   // Update validation when inputs change
   useEffect(() => {
@@ -368,11 +369,11 @@ export default function IncomeTaxCalculator() {
       <div className="relative z-10 w-full max-w-5xl">
         {/* Title Outside Widget */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl lg:text-5xl text-slate-600">Income Tax Calculator</h1>
+          <h1 className="text-4xl lg:text-5xl text-theme-primary font-theme">Income Tax Calculator</h1>
         </div>
 
         {/* Main Card */}
-        <Card className="bg-slate-800/80 backdrop-blur-xl border-slate-700/50 shadow-2xl text-white rounded-3xl relative">
+        <Card className="bg-theme-primary/80 backdrop-blur-xl border-theme-secondary/50 shadow-2xl text-white rounded-3xl relative">
           <CardContent className="p-8">
             {/* Company Logo */}
             <div className="absolute top-6 right-6">
@@ -395,19 +396,19 @@ export default function IncomeTaxCalculator() {
                   <div className="space-y-5">
                     {/* Income Amount */}
                     <div className="space-y-2">
-                      <Label htmlFor="income" className="text-sm font-medium text-slate-300">
+                      <Label htmlFor="income" className="text-sm font-medium text-white">
                         Income Amount
                       </Label>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                          <span className="text-slate-400 text-lg font-bold">$</span>
+                          <span className="text-white text-lg font-bold">$</span>
                         </div>
                         <Input
                           type="number"
                           id="income"
                           value={inputs.income || ""}
                           onChange={(e) => handleInputChange("income", e.target.value)}
-                          className={`pl-8 bg-slate-700/50 border-slate-600 text-white placeholder-slate-400 focus:border-blue-400 focus:ring-blue-400/20 h-12 text-lg ${
+                          className={`pl-8 bg-theme-secondary/50 border-theme-secondary text-white placeholder-theme-secondary/70 focus:border-blue-400 focus:ring-blue-400/20 h-12 text-lg ${
                             touchedFields.income && errors.income ? "border-red-400 focus:border-red-400" : ""
                           }`}
                           placeholder="75,000"
@@ -425,7 +426,7 @@ export default function IncomeTaxCalculator() {
 
                 {/* Income Frequency */}
                 <div className="space-y-4">
-                  <Label className="text-sm font-medium text-slate-300">Income Frequency</Label>
+                  <Label className="text-sm font-medium text-white">Income Frequency</Label>
                   <RadioGroup
                     value={inputs.incomeFrequency}
                     onValueChange={(value) => handleInputChange("incomeFrequency", value)}
@@ -440,11 +441,11 @@ export default function IncomeTaxCalculator() {
                         <RadioGroupItem value={frequency.value} id={frequency.value} className="peer sr-only" />
                         <Label
                           htmlFor={frequency.value}
-                          className="flex flex-col items-center justify-center p-4 bg-slate-700/30 border border-slate-600 rounded-lg cursor-pointer hover:bg-slate-700/50 peer-data-[state=checked]:border-blue-400 peer-data-[state=checked]:bg-blue-500/10 transition-all duration-200"
+                                                      className="flex flex-col items-center justify-center p-4 bg-theme-secondary/30 border border-theme-secondary rounded-lg cursor-pointer hover:bg-theme-secondary/50 peer-data-[state=checked]:border-theme-primary peer-data-[state=checked]:bg-theme-primary/20 transition-all duration-200"
                         >
-                          <Calendar className="h-5 w-5 mb-2 text-slate-400 peer-data-[state=checked]:text-blue-400" />
+                                                      <Calendar className="h-5 w-5 mb-2 text-white peer-data-[state=checked]:text-theme-primary" />
                           <span className="font-medium text-sm text-white">{frequency.label}</span>
-                          <Badge variant="secondary" className="mt-1 text-xs bg-slate-600 text-slate-300">
+                          <Badge variant="secondary" className="mt-1 text-xs bg-theme-secondary text-white">
                             {frequency.desc}
                           </Badge>
                         </Label>
@@ -459,7 +460,7 @@ export default function IncomeTaxCalculator() {
                     <h4 className="text-lg font-semibold text-white">Income Distribution</h4>
                     
                     {/* Pie Chart */}
-                    <div className="bg-slate-700/30 border border-slate-600 rounded-xl p-6">
+                    <div className="bg-theme-secondary/30 border border-theme-secondary rounded-xl p-6">
 
                       <div className="h-64 p-4">
                         <ResponsiveContainer width="100%" height="100%">
@@ -606,9 +607,9 @@ export default function IncomeTaxCalculator() {
 
                     {/* Tax Summary Cards */}
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-slate-700/50 p-4 rounded-lg border border-slate-600">
+                      <div className="bg-theme-secondary/50 p-4 rounded-lg border border-theme-secondary">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                          <span className="text-xs font-medium text-white uppercase tracking-wider">
                             Income Tax
                           </span>
                           <DollarSign className="h-4 w-4 text-white" />
@@ -618,9 +619,9 @@ export default function IncomeTaxCalculator() {
                         </p>
                       </div>
 
-                      <div className="bg-slate-700/50 p-4 rounded-lg border border-slate-600">
+                      <div className="bg-theme-secondary/50 p-4 rounded-lg border border-theme-secondary">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                          <span className="text-xs font-medium text-white uppercase tracking-wider">
                             Medicare Levy
                           </span>
                           <TrendingUp className="h-4 w-4 text-white" />
@@ -630,9 +631,9 @@ export default function IncomeTaxCalculator() {
                         </p>
                       </div>
 
-                      <div className="bg-slate-700/50 p-4 rounded-lg border border-slate-600">
+                      <div className="bg-theme-secondary/50 p-4 rounded-lg border border-theme-secondary">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                          <span className="text-xs font-medium text-white uppercase tracking-wider">
                             Total Tax
                           </span>
                           <Percent className="h-4 w-4 text-white" />
@@ -642,9 +643,9 @@ export default function IncomeTaxCalculator() {
                         </p>
                       </div>
 
-                      <div className="bg-slate-700/50 p-4 rounded-lg border border-slate-600">
+                      <div className="bg-theme-secondary/50 p-4 rounded-lg border border-theme-secondary">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                          <span className="text-xs font-medium text-white uppercase tracking-wider">
                             Effective Rate
                           </span>
                           <TrendingUp className="h-4 w-4 text-white" />
@@ -665,7 +666,7 @@ export default function IncomeTaxCalculator() {
                         <p className="text-2xl font-bold text-white mb-1">
                           {formatCurrency(getFrequencyAmount(calculateTax.medicareLevySurcharge, inputs.incomeFrequency))}
                         </p>
-                        <p className="text-slate-300 text-sm">
+                        <p className="text-white text-sm">
                           Higher income earners pay this surcharge (can be avoided with private health insurance)
                         </p>
                       </div>
@@ -676,7 +677,7 @@ export default function IncomeTaxCalculator() {
                       <Button
                         variant="outline"
                         onClick={() => setShowTaxBreakdown(!showTaxBreakdown)}
-                        className="w-full bg-slate-700/50 border-slate-600 text-white hover:bg-slate-700 hover:text-white"
+                        className="w-full bg-theme-secondary/50 border-theme-secondary text-white hover:bg-theme-secondary hover:text-white"
                       >
                         <div className="flex items-center justify-between w-full">
                           <span>View Tax Brackets Breakdown</span>
@@ -689,25 +690,25 @@ export default function IncomeTaxCalculator() {
                       </Button>
 
                       {showTaxBreakdown && taxBreakdown.length > 0 && (
-                        <div className="bg-slate-700/30 border border-slate-600 rounded-lg p-4 animate-fade-in">
+                        <div className="bg-theme-secondary/30 border border-theme-secondary rounded-lg p-4 animate-fade-in">
                           <h4 className="font-semibold text-white mb-4">Tax Brackets Applied</h4>
-                          <div className="max-h-80 overflow-y-auto rounded-lg border border-slate-600">
+                          <div className="max-h-80 overflow-y-auto rounded-lg border border-theme-secondary">
                             <Table>
-                              <TableHeader className="sticky top-0 bg-slate-800">
-                                <TableRow className="border-slate-600">
-                                  <TableHead className="text-slate-300 font-medium text-xs">Income Range</TableHead>
-                                  <TableHead className="text-slate-300 font-medium text-xs">Rate</TableHead>
-                                  <TableHead className="text-slate-300 font-medium text-xs">Taxable</TableHead>
-                                  <TableHead className="text-slate-300 font-medium text-xs">Tax</TableHead>
+                              <TableHeader className="sticky top-0 bg-theme-primary">
+                                <TableRow className="border-theme-secondary">
+                                  <TableHead className="text-white font-medium text-xs">Income Range</TableHead>
+                                  <TableHead className="text-white font-medium text-xs">Rate</TableHead>
+                                  <TableHead className="text-white font-medium text-xs">Taxable</TableHead>
+                                  <TableHead className="text-white font-medium text-xs">Tax</TableHead>
                                 </TableRow>
                               </TableHeader>
                               <TableBody>
                                 {taxBreakdown.map((bracket, index) => (
                                   <TableRow
                                     key={index}
-                                    className={`border-slate-600 hover:bg-slate-700/20 ${bracket.isOffset ? 'bg-blue-500/10' : ''}`}
+                                    className={`border-theme-secondary hover:bg-theme-secondary/20 ${bracket.isOffset ? 'bg-blue-500/10' : ''}`}
                                   >
-                                    <TableCell className={`text-xs font-mono ${bracket.isOffset ? 'text-blue-300' : 'text-slate-300'}`}>
+                                    <TableCell className={`text-xs font-mono ${bracket.isOffset ? 'text-blue-300' : 'text-white'}`}>
                                       {bracket.range}
                                     </TableCell>
                                     <TableCell className={`text-xs font-mono ${bracket.isOffset ? 'text-blue-300' : 'text-white'}`}>
@@ -729,11 +730,11 @@ export default function IncomeTaxCalculator() {
                           </div>
 
                           {/* Tax Total Summary Row */}
-                          <div className="mt-4 p-3 bg-slate-800/50 rounded-lg border border-slate-600">
+                          <div className="mt-4 p-3 bg-theme-primary/50 rounded-lg border border-theme-secondary">
                             <div className="grid grid-cols-4 gap-2 text-sm font-bold">
-                              <div className="text-slate-300">Total Income Tax:</div>
-                              <div className="text-slate-400">-</div>
-                              <div className="text-slate-400">-</div>
+                              <div className="text-white">Total Income Tax:</div>
+                              <div className="text-white">-</div>
+                              <div className="text-white">-</div>
                               <div className="text-white">
                                 {formatCurrency(taxBreakdown.reduce((sum, bracket) => sum + bracket.taxAmount, 0))}
                               </div>
@@ -741,20 +742,20 @@ export default function IncomeTaxCalculator() {
                           </div>
 
                           {/* Summary */}
-                          <div className="mt-4 p-3 bg-slate-800/50 rounded-lg border border-slate-600">
+                          <div className="mt-4 p-3 bg-theme-primary/50 rounded-lg border border-theme-secondary">
                             <div className="grid grid-cols-2 gap-4 text-xs">
                               <div>
-                                <span className="text-slate-400">Marginal Tax Rate: </span>
+                                <span className="text-white">Marginal Tax Rate: </span>
                                 <span className="text-white font-bold">{calculateTax.marginalTaxRate.toFixed(1)}%</span>
                               </div>
                               <div>
-                                <span className="text-slate-400">Effective Tax Rate: </span>
+                                <span className="text-white">Effective Tax Rate: </span>
                                 <span className="text-white font-bold">{calculateTax.effectiveTaxRate.toFixed(1)}%</span>
                               </div>
                             </div>
                           </div>
 
-                          <div className="mt-3 text-xs text-slate-400 space-y-1">
+                          <div className="mt-3 text-xs text-white space-y-1">
                             <p>• Tax brackets apply progressively - each bracket only taxes income within that range</p>
                             <p>• Low Income Tax Offset (LITO) reduces tax payable by up to $700</p>
                             <p>• LITO highlighted in blue - phases out from $37,500 to $66,667</p>
@@ -765,10 +766,10 @@ export default function IncomeTaxCalculator() {
                     </div>
 
                     {/* Disclaimer */}
-                    <div className="bg-slate-700/30 p-4 rounded-lg border border-slate-600">
+                    <div className="bg-theme-secondary/30 p-4 rounded-lg border border-theme-secondary">
                       <div className="flex items-start space-x-3">
-                        <AlertCircle className="h-4 w-4 text-slate-400 mt-1 flex-shrink-0" />
-                        <div className="text-xs text-slate-400 space-y-1">
+                        <AlertCircle className="h-4 w-4 text-white mt-1 flex-shrink-0" />
+                        <div className="text-xs text-white space-y-1">
                           <p>• Calculations based on 2024-25 Australian tax brackets</p>
                           <p>• Results are estimates and exclude deductions or offsets</p>
                           <p>• Medicare levy (2%) and surcharge applied per 2024-25 thresholds</p>
@@ -779,11 +780,11 @@ export default function IncomeTaxCalculator() {
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <div className="w-16 h-16 bg-slate-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Calculator className="h-8 w-8 text-slate-400" />
+                    <div className="w-16 h-16 bg-theme-secondary/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Calculator className="h-8 w-8 text-white" />
                     </div>
                     <h4 className="font-semibold text-lg mb-2 text-white">Enter income details</h4>
-                    <p className="text-slate-400 text-sm">Fill in the form to see your tax calculations</p>
+                    <p className="text-white text-sm">Fill in the form to see your tax calculations</p>
                   </div>
                 )}
               </div>
